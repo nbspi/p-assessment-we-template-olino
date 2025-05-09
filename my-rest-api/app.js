@@ -3,6 +3,7 @@
 
 import express, { json, urlencoded } from "express"; // import Express framework
 import { sequelize } from "./models/index.js"; // load Sequelize instance (our DB connector)
+import supplierRoutes from "./routes/supplierRoutes.js";
 
 const app = express(); // create an Express application instance
 
@@ -15,7 +16,6 @@ app.use(json()); // makes JSON data available on req.body
 app.use(urlencoded({ extended: true })); // makes form data available on req.body
 
 // TODO: mount your route modules here, for example:
-import supplierRoutes from "./routes/supplierRoutes.js";
 app.use("/suppliers", supplierRoutes);
 
 // ========== START SERVER ==========
