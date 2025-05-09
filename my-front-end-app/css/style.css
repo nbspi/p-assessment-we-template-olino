@@ -12,16 +12,3 @@ header h1 {
   text-align: center;
   margin-bottom: 1rem;
 }
-
-ul#product-list {
-  list-style: none;
-  padding: 0;
-}
-
-ul#product-list li {
-  background: #fff;
-  margin-bottom: 0.5rem;
-  padding: 0.75rem;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
