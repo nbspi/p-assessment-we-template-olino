@@ -6,11 +6,14 @@ import { sequelize } from "./models/index.js"; // load Sequelize instance (our D
 import supplierRoutes from "./routes/supplierRoutes.js";
 import componentRoutes from "./routes/componentRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import cors from "cors";
 
 const app = express(); // create an Express application instance
 
+app.use(cors());
+
 // parse incoming JSON payloads without needing the body-parser package
-app.use(json()); // makes JSON data available on req.body
+app.use(express.json()); // makes JSON data available on req.body
 
 // parse URL-encoded form data (e.g., HTML form submissions)
 app.use(urlencoded({ extended: true })); // makes form data available on req.body
