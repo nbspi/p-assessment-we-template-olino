@@ -1,7 +1,7 @@
 // controllers/supplierController.js
 // PURPOSE: Handle HTTP requests for Supplier resources
 
-import { Supplier, Component } from "../models";
+import { Supplier, Component } from "../models/index.js";
 
 /**
  * GET /suppliers
@@ -68,7 +68,7 @@ export async function update(req, res) {
  * DELETE /suppliers/:id
  * Deletes a supplier and its associations.
  */
-export async function destroy(req, res) {
+export async function remove(req, res) {
 	try {
 		const { id } = req.params; // supplier ID from URL
 		// Fetch the supplier; if not found, return 404
