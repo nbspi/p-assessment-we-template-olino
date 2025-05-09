@@ -5,19 +5,20 @@ import express, { json, urlencoded } from "express"; // import Express framework
 import { sequelize } from "./models/index.js"; // load Sequelize instance (our DB connector)
 import supplierRoutes from "./routes/supplierRoutes.js";
 import componentRoutes from "./routes/componentRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 
 const app = express(); // create an Express application instance
 
-// ========== MIDDLEWARE ==========
 // parse incoming JSON payloads without needing the body-parser package
 app.use(json()); // makes JSON data available on req.body
 
 // parse URL-encoded form data (e.g., HTML form submissions)
 app.use(urlencoded({ extended: true })); // makes form data available on req.body
 
-// TODO: mount your route modules here, for example:
+// Mount your route modules here, for example:
 app.use("/suppliers", supplierRoutes);
 app.use("/components", componentRoutes);
+app.use("/products", productRoutes);
 
 // ========== START SERVER ==========
 const PORT = process.env.PORT || 3000; // define port, default to 3000
