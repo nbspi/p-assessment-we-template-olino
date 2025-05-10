@@ -11,7 +11,9 @@ export function initProductSection({ listId, formId, apiBase }) {
 			const data = await res.json();
 			listEl.innerHTML = data
 				.map((p) => {
-					const comps = p.Components.map((c) => c.id).join(",");
+					const comps = p.Components.map((c) => c.name).join(
+						","
+					);
 					return (
 						`<li data-id="${p.id}">` +
 						`<span>${p.name} (Code:${p.product_code}) — Qty: ${p.quantity_on_hand}` +
