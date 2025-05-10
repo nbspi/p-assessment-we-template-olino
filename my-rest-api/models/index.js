@@ -5,6 +5,7 @@ import sequelize from "../config/db.js"; // our DB connection
 import Supplier from "./supplier.js"; // Supplier model
 import Component from "./component.js"; // Component model
 import Product from "./product.js"; // Product model
+import User from "./user.js";
 
 // A Supplier can supply many Components, and vice versa
 Supplier.belongsToMany(Component, { through: "SupplierComponent" });
@@ -15,4 +16,4 @@ Product.belongsToMany(Component, { through: "ProductComponent" });
 Component.belongsToMany(Product, { through: "ProductComponent" });
 
 // Export all so app.js and controllers can import them easily
-export { sequelize, Supplier, Component, Product };
+export { sequelize, Supplier, Component, Product, User };
