@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta
 			name="viewport"
-			content="width=device-width,initial-scale=1.0" />
+			content="width=device-width, initial-scale=1.0" />
 		<title>Lou Geh Inventory</title>
 		<link rel="stylesheet" href="css/style.css" />
 	</head>
@@ -13,18 +13,20 @@
 			<h1>Lou Geh Inventory</h1>
 		</header>
 
-		<!-- Supplier Form -->
+		<!-- Supplier Section -->
 		<section>
-			<h2>Create Supplier</h2>
+			<h2>Suppliers</h2>
 			<form id="supplier-form">
 				<input
 					type="text"
 					id="supplier-name"
+					name="name"
 					placeholder="Supplier name"
 					required />
 				<input
 					type="text"
 					id="supplier-contact"
+					name="contact_info"
 					placeholder="Contact info (optional)" />
 				<button type="submit">Add Supplier</button>
 			</form>
@@ -33,18 +35,20 @@
 			</ul>
 		</section>
 
-		<!-- Component Form -->
+		<!-- Component Section -->
 		<section>
-			<h2>Create Component</h2>
+			<h2>Components</h2>
 			<form id="component-form">
 				<input
 					type="text"
 					id="component-name"
+					name="name"
 					placeholder="Component name"
 					required />
 				<input
 					type="text"
 					id="component-desc"
+					name="description"
 					placeholder="Description (optional)" />
 				<button type="submit">Add Component</button>
 			</form>
@@ -53,39 +57,43 @@
 			</ul>
 		</section>
 
-		<!-- Product Form & List -->
+		<!-- Product Section -->
 		<section>
-			<h2>Create Product</h2>
+			<h2>Products</h2>
 			<form id="product-form">
 				<input
 					type="text"
 					id="product-name"
+					name="name"
 					placeholder="Product name"
 					required />
 				<input
 					type="text"
 					id="product-code"
+					name="product_code"
 					placeholder="Product code"
 					required />
 				<input
 					type="number"
 					id="product-quantity"
-					min="0"
+					name="quantity_on_hand"
 					placeholder="Quantity on hand"
+					min="0"
 					required />
 				<input
 					type="text"
 					id="product-components"
+					name="component_ids"
 					placeholder="Component IDs (e.g. 1,2,3)"
 					required />
 				<button type="submit">Add Product</button>
 			</form>
-
 			<ul id="product-list">
 				Loading products…
 			</ul>
 		</section>
 
-		<script src="js/app.js"></script>
+		<!-- Main JS Module -->
+		<script type="module" src="js/main.js"></script>
 	</body>
 </html>
