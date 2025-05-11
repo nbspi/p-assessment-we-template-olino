@@ -1,11 +1,12 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 2rem;
-  background: #f9f9f9;
-  color: #333;
+	font-family: Arial, sans-serif;
+	margin: 2rem;
+	background: #f9f9f9;
+	color: #333;
 }
 
-header h1 {
-  text-align: center;
-  margin-bottom: 1rem;
+header {
+	display: flex;
+	align-items: center;
+  gap: 0 18px;
 }
