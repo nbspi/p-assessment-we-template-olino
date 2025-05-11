@@ -31,7 +31,7 @@ const PORT = process.env.PORT || 3000; // define port, default to 3000
 // synchronize our Sequelize models with the database
 // { alter: true } will adjust tables to match models (adding/removing columns as needed)
 sequelize
-	.sync({ force: true })
+	.sync()
 	.then(() => {
 		app.listen(PORT, () => {
 			console.log(`🚀 Server running at http://localhost:${PORT}`); // confirm server is listening
