@@ -10,7 +10,6 @@ export default function authMiddleware(req, res, next) {
 		return res.status(401).json({ error: "Unauthorized: missing token" });
 	}
 	const token = header.split(" ")[1];
-	console.log("Raw token:", token);
 
 	try {
 		// Verify token and extract payload

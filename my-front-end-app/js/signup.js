@@ -32,7 +32,7 @@ form.addEventListener("submit", async (e) => {
 		// 4. Handle response
 		if (res.status === 201) {
 			alert("Account created! Please sign in.");
-			// window.location.href = "signin.html";
+			window.location.href = "signin.html";
 		} else {
 			const error = await res.json();
 			alert(error.error || "Sign-up failed.");
