@@ -8,11 +8,13 @@ import { initProductSection } from "./product.js";
 // 1. Redirect if not authenticated
 const token = localStorage.getItem("authToken");
 const expiry = parseInt(localStorage.getItem("tokenExpiry"), 10) || 0;
-if (!token || Date.now() > expiry) {
-	localStorage.removeItem("authToken");
-	localStorage.removeItem("tokenExpiry");
-	window.location.href = "signin.html";
-}
+
+// TODO: Redirect to sign in if user is not logged in
+// if (!token || Date.now() > expiry) {
+// 	localStorage.removeItem("authToken");
+// 	localStorage.removeItem("tokenExpiry");
+// 	window.location.href = "signin.html";
+// }
 
 // 2. Helper for headers
 export function authHeaders() {

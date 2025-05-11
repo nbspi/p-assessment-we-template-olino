@@ -7,6 +7,11 @@ export function initSupplierSection({ listId, formId, apiBase }) {
 	const listEl = document.getElementById(listId);
 	const formEl = document.getElementById(formId);
 
+	// TODO: Hide form and, edit and delete buttons when no user is logged in
+	// if (!localStorage.getItem("authToken")) {
+	// 	document.getElementById(formId).style.display = "none";
+	// }
+
 	async function fetchAndRender() {
 		try {
 			const res = await fetch(apiBase, { headers: authHeaders() });
