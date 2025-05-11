@@ -1,7 +1,7 @@
 // controllers/productController.js
 // PURPOSE: Handle HTTP requests for Product resources using ES module format
 
-import { Product, Component } from "../models/index.js";
+import { Product, Component, sequelize } from "../models/index.js";
 
 /**
  * GET /products
@@ -29,9 +29,13 @@ export async function list(req, res) {
  * Creates a new product. Requires at least one component ID.
  */
 export async function create(req, res) {
+	// start a transaction
+	const t = await sequelize.transaction();
+
 	try {
 		const { name, product_code, quantity_on_hand, componentIds } =
 			req.body;
+
 		// Validation: name, product_code, and components required
 		if (
 			!name ||
@@ -39,24 +43,32 @@ export async function create(req, res) {
 			!Array.isArray(componentIds) ||
 			componentIds.length === 0
 		) {
+			// no need to rollback here, nothing yet in DB
 			return res.status(400).json({
 				error: "Name, product_code, and at least one componentId are required",
 			});
 		}
-		// Create product
-		const product = await Product.create({
-			name,
-			product_code,
-			quantity_on_hand,
-		});
-		// Associate components
-		await product.addComponents(componentIds);
-		// Reload with associations
+
+		// 1) Create product within this transaction
+		const product = await Product.create(
+			{ name, product_code, quantity_on_hand },
+			{ transaction: t }
+		);
+
+		// 2) Associate components—in the same transaction
+		await product.addComponents(componentIds, { transaction: t });
+
+		// 3) If we get here, everything succeeded → commit
+		await t.commit();
+
+		// 4) Reload with associations (outside the transaction is fine)
 		const result = await Product.findByPk(product.id, {
 			include: Component,
 		});
 		return res.status(201).json(result);
 	} catch (err) {
+		// Something went wrong: rollback the entire transaction
+		await t.rollback();
 		console.error("Error creating product:", err);
 		return res.status(500).json({ error: "Failed to create product" });
 	}
