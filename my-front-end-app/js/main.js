@@ -4,19 +4,29 @@
 import { initSupplierSection } from "./supplier.js";
 import { initComponentSection } from "./component.js";
 import { initProductSection } from "./product.js";
+import { signout } from "./signout.js";
 
 // 1. Redirect if not authenticated
 const token = localStorage.getItem("authToken");
 const expiry = parseInt(localStorage.getItem("tokenExpiry"), 10) || 0;
+export const isAuthenticated = Boolean(token && Date.now() < expiry);
 
-// TODO: Redirect to sign in if user is not logged in
-// if (!token || Date.now() > expiry) {
-// 	localStorage.removeItem("authToken");
-// 	localStorage.removeItem("tokenExpiry");
-// 	window.location.href = "signin.html";
-// }
+// 2. Render auth controls
+const authContainer = document.getElementById("auth-controls");
+if (token && Date.now() < expiry) {
+	// logged in
+	authContainer.innerHTML = `<button id="sign-out">Sign Out</button>`;
+	document.getElementById("sign-out").addEventListener("click", signout);
+} else {
+	// not logged in
+	authContainer.innerHTML = `
+    <a href="signup.html">Sign Up</a>
+    &nbsp;|&nbsp;
+    <a href="signin.html">Sign In</a>
+  `;
+}
 
-// 2. Helper for headers
+// 3. Helper for headers
 export function authHeaders() {
 	return { Authorization: `Bearer ${localStorage.getItem("authToken")}` };
 }
@@ -27,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		formId: "supplier-form",
 		apiBase: "http://localhost:3000/suppliers",
 		authHeaders,
+		isAuthenticated,
 	});
 
 	initComponentSection({
@@ -34,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		formId: "component-form",
 		apiBase: "http://localhost:3000/components",
 		authHeaders,
+		isAuthenticated,
 	});
 
 	initProductSection({
@@ -41,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		formId: "product-form",
 		apiBase: "http://localhost:3000/products",
 		authHeaders,
+		isAuthenticated,
 	});
 });
 
