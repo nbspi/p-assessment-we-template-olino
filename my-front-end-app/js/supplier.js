@@ -1,37 +1,41 @@
 // js/supplier.js
 // PURPOSE: Encapsulates supplier CRUD UI logic
 
-import { authHeaders } from "./main.js";
+import { authHeaders, isAuthenticated } from "./main.js";
 
 export function initSupplierSection({ listId, formId, apiBase }) {
 	const listEl = document.getElementById(listId);
 	const formEl = document.getElementById(formId);
 
-	// TODO: Hide form and, edit and delete buttons when no user is logged in
-	// if (!localStorage.getItem("authToken")) {
-	// 	document.getElementById(formId).style.display = "none";
-	// }
+	if (!isAuthenticated) {
+		formEl.style.display = "none";
+	}
 
 	async function fetchAndRender() {
-		try {
-			const res = await fetch(apiBase, { headers: authHeaders() });
-			const data = await res.json();
-			listEl.innerHTML = data
-				.map(
-					(s) =>
-						`<li data-id="${s.id}">` +
-						`<span>${s.name}${
-							s.contact_info ? " – " + s.contact_info : ""
-						}</span>` +
-						`<button class="edit">Edit</button>` +
-						`<button class="delete">Delete</button>` +
-						`</li>`
-				)
-				.join("");
-		} catch (err) {
-			listEl.textContent = "Error loading suppliers.";
-			console.error(err);
+		const suppliers = await fetch(apiBase, {
+			headers: authHeaders(),
+		}).then((r) => r.json());
+
+		if (suppliers.length === 0) {
+			// 3. show empty-list message
+			listEl.innerHTML =
+				'<li class="empty" style="font-size: .875rem">Supplier list is empty</li>';
+			return;
 		}
+
+		listEl.innerHTML = suppliers
+			.map((s) => {
+				// Always show the name
+				let html = `<li data-id="${s.id}"><span>${s.name}${
+					s.contact_info ? " – " + s.contact_info : ""
+				}</span>`;
+				// Only render edit/delete when authenticated
+				if (isAuthenticated) {
+					html += `<button class="edit">Edit</button><button class="delete">Delete</button>`;
+				}
+				return html + `</li>`;
+			})
+			.join("");
 	}
 
 	formEl.addEventListener("submit", async (e) => {
@@ -42,16 +46,25 @@ export function initSupplierSection({ listId, formId, apiBase }) {
 			contact_info: formData.get("contact_info").trim(),
 		};
 		if (!payload.name) return alert("Name required");
-		await fetch(apiBase, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				...authHeaders(),
-			},
-			body: JSON.stringify(payload),
-		});
-		formEl.reset();
-		fetchAndRender();
+		try {
+			const res = await fetch(apiBase, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					...authHeaders(),
+				},
+				body: JSON.stringify(payload),
+			});
+			if (!res.ok) {
+				const data = res.json();
+				return alert(data.error || "Failed to create supplier.");
+			}
+			formEl.reset();
+			fetchAndRender();
+		} catch (err) {
+			console.error("Network or unexpected error:", err);
+			alert("Network error. Please try again.");
+		}
 	});
 
 	listEl.addEventListener("click", async (e) => {
@@ -59,11 +72,22 @@ export function initSupplierSection({ listId, formId, apiBase }) {
 		if (!li) return;
 		const id = li.dataset.id;
 		if (e.target.classList.contains("delete")) {
-			await fetch(`${apiBase}/${id}`, {
-				method: "DELETE",
-				headers: authHeaders(),
-			});
-			return fetchAndRender();
+			try {
+				const res = await fetch(`${apiBase}/${id}`, {
+					method: "DELETE",
+					headers: authHeaders(),
+				});
+				if (!res.ok) {
+					const data = res.json();
+					return alert(
+						data.error || "Failed to delete supplier."
+					);
+				}
+				return fetchAndRender();
+			} catch (err) {
+				console.error("Network or unexpected error:", err);
+				alert("Network error. Please try again.");
+			}
 		}
 		if (e.target.classList.contains("edit")) {
 			const name = prompt(
@@ -71,18 +95,29 @@ export function initSupplierSection({ listId, formId, apiBase }) {
 				li.querySelector("span").textContent
 			);
 			if (name == null) return;
-			await fetch(`${apiBase}/${id}`, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-					...authHeaders(),
-				},
-				body: JSON.stringify({
-					name: name.trim(),
-					contact_info: "",
-				}),
-			});
-			fetchAndRender();
+			try {
+				const res = await fetch(`${apiBase}/${id}`, {
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+						...authHeaders(),
+					},
+					body: JSON.stringify({
+						name: name.trim(),
+						contact_info: "",
+					}),
+				});
+				if (!res.ok) {
+					const data = red.json();
+					return alert(
+						data.error || "Failed to update supplier."
+					);
+				}
+				fetchAndRender();
+			} catch (err) {
+				console.error("Network or unexpected error:", err);
+				alert("Network error. Please try again.");
+			}
 		}
 	});
 
