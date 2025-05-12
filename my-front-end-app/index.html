@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Lou Geh Inventory</title>
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+	<body>
+		<header>
+			<h1>Lou Geh Inventory</h1>
+			<div id="auth-controls"></div>
+		</header>
+
+		<hr style="color: azure" />
+
+		<!-- Supplier Section -->
+		<section>
+			<h2>Suppliers</h2>
+			<form id="supplier-form">
+				<input
+					type="text"
+					id="supplier-name"
+					name="name"
+					placeholder="Supplier name"
+					required />
+				<input
+					type="text"
+					id="supplier-contact"
+					name="contact_info"
+					placeholder="Contact info (optional)" />
+				<button type="submit">Add Supplier</button>
+			</form>
+			<ul id="supplier-list">
+				Loading suppliers…
+			</ul>
+		</section>
+
+		<br />
+		<hr style="color: azure" />
+
+		<!-- Component Section -->
+		<section>
+			<h2>Components</h2>
+			<form id="component-form">
+				<input
+					type="text"
+					id="component-name"
+					name="name"
+					placeholder="Component name"
+					required />
+				<input
+					type="text"
+					id="component-desc"
+					name="description"
+					placeholder="Description (optional)" />
+				<select id="component-suppliers">
+					<option value="" selected hidden>
+						Choose suppliers
+					</option>
+					<!-- options will be injected here -->
+				</select>
+				<label for="">Selected suppliers:</label>
+				<span id="selected-suppliers-list"> None </span>
+				<button type="submit">Add Component</button>
+			</form>
+			<ul id="component-list">
+				Loading components…
+			</ul>
+		</section>
+
+		<br />
+		<hr style="color: azure" />
+
+		<!-- Product Section -->
+		<section>
+			<h2>Products</h2>
+			<form id="product-form">
+				<input
+					type="text"
+					id="product-name"
+					name="name"
+					placeholder="Product name"
+					required />
+				<input
+					type="text"
+					id="product-code"
+					name="product_code"
+					placeholder="Product code"
+					required />
+				<input
+					type="number"
+					id="product-quantity"
+					name="quantity_on_hand"
+					placeholder="Quantity on hand"
+					min="0"
+					required />
+				<!-- <input
+					type="text"
+					id="product-components"
+					name="component_ids"
+					placeholder="Component IDs (e.g. 1,2,3)"
+					required /> -->
+				<select id="product-components">
+					<option value="" selected hidden>
+						Choose component
+					</option>
+					<!-- options will be injected here -->
+				</select>
+				<label for="">Selected components:</label>
+				<span id="selected-components-list"> None </span>
+				<button type="submit">Add Product</button>
+			</form>
+			<ul id="product-list">
+				Loading products…
+			</ul>
+		</section>
+
+		<!-- Main JS Module -->
+		<script type="module" src="js/main.js"></script>
+	</body>
+</html>
