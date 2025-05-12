@@ -1,0 +1,16 @@
+{
+	"name": "p-assessment-we-template-olino",
+	"version": "1.0.0",
+	"description": "Lou Geh manufacturing company produces products. The following product informationis stored: product name, product ID and quantity on hand. These products are madeup of many components. Each component can be supplied by one or more suppliers. Thefollowing component information is kept: component ID, name, description, suppliers who supply them, and products in which they are used.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "concurrently \"npm run dev --prefix my-rest-api\" \"npm run dev --prefix my-front-end-app\""
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"concurrently": "^9.1.2"
+	}
+}
