@@ -9,12 +9,12 @@ export function initProductSection({ listId, formId, apiBase }) {
 	const selectEl = document.getElementById("product-components");
 	const pickedEl = document.getElementById("selected-components-list");
 
+	let allComponents = []; // will hold { id, name, ... }
+	let selectedComponentIds = []; // IDs the user has toggled
+
 	if (!isAuthenticated) {
 		formEl.style.display = "none";
 	}
-
-	let allComponents = []; // will hold { id, name, ... }
-	let selectedComponentIds = []; // IDs the user has toggled
 
 	// 1) Load all components (once)
 	async function loadComponentOptions() {
@@ -23,6 +23,7 @@ export function initProductSection({ listId, formId, apiBase }) {
 		});
 		const comps = await res.json();
 		allComponents = comps;
+		selectedComponentIds.push(allComponents[0].id);
 		// build dropdown options
 		selectEl.innerHTML = comps
 			.map((c) => `<option value="${c.id}">${c.name}</option>`)
