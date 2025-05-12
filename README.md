@@ -229,3 +229,12 @@ The following are the main API endpoints provided by the backend (all paths are 
   * `DELETE /products/:id` – Delete a product.  **Protected** .
 
 **Note:** When not authenticated (no token or an invalid token), **POST/PUT/DELETE** routes will respond with HTTP 401 Unauthorized. The front-end handles this by hiding those actions when you’re not signed in. When authenticated, include the JWT token in the `Authorization` header as `Bearer <token>` (the front-end does this automatically via the `authHeaders()` helper in JS).
+
+
+
+## Discussions
+
+* [System Entity-Relationship Diagram and Data Flow Diagram](https://github.com/TenshinAkuma/p-assessment-we-template-olino/discussions/34)
+* [Product Use Case](https://github.com/TenshinAkuma/p-assessment-we-template-olino/discussions/36)
+* [Component Use Case](https://github.com/TenshinAkuma/p-assessment-we-template-olino/discussions/37)
+* [Supplier Use Case](https://github.com/TenshinAkuma/p-assessment-we-template-olino/discussions/38)
