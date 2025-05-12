@@ -6,10 +6,60 @@ import { authHeaders, isAuthenticated } from "./main.js";
 export function initProductSection({ listId, formId, apiBase }) {
 	const listEl = document.getElementById(listId);
 	const formEl = document.getElementById(formId);
+	const selectEl = document.getElementById("product-components");
+	const pickedEl = document.getElementById("selected-components-list");
 
 	if (!isAuthenticated) {
 		formEl.style.display = "none";
 	}
+
+	let allComponents = []; // will hold { id, name, ... }
+	let selectedComponentIds = []; // IDs the user has toggled
+
+	// 1) Load all components (once)
+	async function loadComponentOptions() {
+		const res = await fetch("http://localhost:3000/components", {
+			headers: authHeaders(),
+		});
+		const comps = await res.json();
+		allComponents = comps;
+		// build dropdown options
+		selectEl.innerHTML = comps
+			.map((c) => `<option value="${c.id}">${c.name}</option>`)
+			.join("");
+	}
+
+	// 2) Render the picked list
+	function renderPicked() {
+		if (selectedComponentIds.length === 0) {
+			pickedEl.innerHTML = "<span>None</span>";
+			return;
+		}
+		pickedEl.innerHTML = selectedComponentIds
+			.map((id) => {
+				const c = allComponents.find((x) => x.id === id);
+				return `<span data-id="${id}">${
+					c ? c.name + " " : "Unknown"
+				}</span>`;
+			})
+			.join("");
+	}
+
+	// 3) Toggle selection on change
+	selectEl.addEventListener("change", (e) => {
+		const id = parseInt(e.target.value, 10);
+		const idx = selectedComponentIds.indexOf(id);
+		if (idx === -1) selectedComponentIds.push(id);
+		else selectedComponentIds.splice(idx, 1);
+
+		// clear the UI selection so you can pick again to un-toggle
+		selectEl.selectedIndex = -1;
+
+		renderPicked();
+	});
+
+	// initialize options & picked display
+	loadComponentOptions().then(renderPicked);
 
 	async function fetchAndRender() {
 		try {
@@ -54,11 +104,7 @@ export function initProductSection({ listId, formId, apiBase }) {
 			name: fd.get("name").trim(),
 			product_code: fd.get("product_code").trim(),
 			quantity_on_hand: parseInt(fd.get("quantity_on_hand"), 10),
-			componentIds: fd
-				.get("component_ids")
-				.split(",")
-				.map((n) => parseInt(n, 10))
-				.filter((n) => !isNaN(n)),
+			componentIds: selectedComponentIds.slice(),
 		};
 		if (
 			!payload.name ||
