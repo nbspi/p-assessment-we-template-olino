@@ -6,10 +6,61 @@ import { authHeaders, isAuthenticated } from "./main.js";
 export function initComponentSection({ listId, formId, apiBase }) {
 	const listEl = document.getElementById(listId);
 	const formEl = document.getElementById(formId);
+	const selectEl = document.getElementById("component-suppliers");
+	const pickedEl = document.getElementById("selected-suppliers-list");
+
+	let allSuppliers = []; // will hold { id, name, ... }
+	let selectedSupplierIds = []; // IDs the user has toggled
 
 	if (!isAuthenticated) {
 		formEl.style.display = "none";
 	}
+
+	// 1) Load all components (once)
+	async function loadSupplierOptions() {
+		const res = await fetch("http://localhost:3000/suppliers", {
+			headers: authHeaders(),
+		});
+		const suppliers = await res.json();
+		allSuppliers = suppliers;
+		selectedSupplierIds.push(allSuppliers[0].id);
+		// build dropdown options
+		selectEl.innerHTML = suppliers
+			.map((c) => `<option value="${c.id}">${c.name}</option>`)
+			.join("");
+	}
+
+	// 2) Render the picked list
+	function renderPicked() {
+		if (selectedSupplierIds.length === 0) {
+			pickedEl.innerHTML = "<span>None</span>";
+			return;
+		}
+		pickedEl.innerHTML = selectedSupplierIds
+			.map((id) => {
+				const c = allSuppliers.find((x) => x.id === id);
+				return `<span data-id="${id}">${
+					c ? c.name + " " : "Unknown"
+				}</span>`;
+			})
+			.join("");
+	}
+
+	// 3) Toggle selection on change
+	selectEl.addEventListener("change", (e) => {
+		const id = parseInt(e.target.value, 10);
+		const idx = selectedSupplierIds.indexOf(id);
+		if (idx === -1) selectedSupplierIds.push(id);
+		else selectedSupplierIds.splice(idx, 1);
+
+		// clear the UI selection so you can pick again to un-toggle
+		selectEl.selectedIndex = -1;
+
+		renderPicked();
+	});
+
+	// initialize options & picked display
+	loadSupplierOptions().then(renderPicked);
 
 	async function fetchAndRender() {
 		try {
@@ -59,7 +110,9 @@ export function initComponentSection({ listId, formId, apiBase }) {
 		const payload = {
 			name: formData.get("name").trim(),
 			description: formData.get("description").trim(),
+			supplierIds: selectedSupplierIds.slice(),
 		};
+
 		if (!payload.name) return alert("Name required");
 
 		try {

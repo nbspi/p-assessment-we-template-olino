@@ -1,7 +1,7 @@
 // controllers/componentController.js
 // PURPOSE: Handle HTTP requests for Component resources using ES module format
 
-import { Component, Supplier, Product } from "../models/index.js";
+import { Component, Supplier, Product, sequelize } from "../models/index.js";
 
 /**
  * GET /components
@@ -24,14 +24,28 @@ export async function list(req, res) {
  * Creates a new component record.
  */
 export async function create(req, res) {
+	const transac = await sequelize.transaction();
 	try {
-		const { name, description } = req.body;
+		const { name, description, supplierIds } = req.body;
 		if (!name) {
 			return res.status(400).json({ error: "Name is required" });
 		}
-		const component = await Component.create({ name, description });
+		const component = await Component.create(
+			{ name, description },
+			{ transaction: transac }
+		);
+		if (Array.isArray(supplierIds) && supplierIds.length > 0) {
+			await component.addSuppliers(supplierIds, {
+				transaction: transac,
+			});
+		}
+		await transac.commit();
+		const result = await Component.findByPk(component.id, {
+			include: Supplier,
+		});
 		return res.status(201).json(component);
 	} catch (err) {
+		await transac.rollback();
 		console.error("Error creating component:", err);
 		return res.status(500).json({ error: "Failed to create component" });
 	}
